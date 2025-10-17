@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
 import React, { useRef, useState } from 'react';
-import useThemedTextStyle from '@site/src/hooks/useThemedTextStyle';
+// import useThemedTextStyle from '@site/src/hooks/useThemedTextStyle';
 import { Pressable, StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -16,8 +16,8 @@ import Animated, {
 //                 <Text style={styles.headerText}>Placeholder</Text>
 //             </View>
 //             <View style={styles.bodyContainer}>
-//                 <Link href=''>TicTacToe</Link>
-//                 <Link href=''>Wordle</Link>
+//                 <Link href='tic'>TicTacToe</Link>
+//                 <Link href='wordle'>Wordle</Link>
 //                 <Link href=''>Statistics</Link>
 //             </View>
 //         </View>
@@ -49,18 +49,27 @@ import Animated, {
 //     },
 // })
 
-const exampleStyles = StyleSheet.create({
-  squaresContainer: {
+const styles = StyleSheet.create({
+  wordleContainer: {
     display: 'flex',
     flexDirection: 'row',
     gap: 16,
+  },
+  wordleApp: {
+    display: 'flex',
+    // backgroundColor: '#e0cb6eff',
+    width: 280,
+    height: 300,
+    justifyContent: 'space-evenly',
+    flexWrap: 'wrap',
+    gap: 30,
   },
   square: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 100,
-    height: 100,
+    width: 75,
+    height: 75,
     backgroundColor: '#f8f9ff',
     borderRadius: 20,
   },
@@ -89,37 +98,41 @@ const BRAND_COLORS = ['#fa7f7c', '#b58df1', '#ffe780', '#82cab2'];
 
 const SECTIONS = [
   {
-    name: 'Overview',
-    content: 'You can put here ✨ anything ✨ you want!',
-  },
-  {
-    name: 'Squares',
+    name: 'Wordle',
     content: (
-      <View style={exampleStyles.squaresContainer}>
-        <View style={exampleStyles.square}>
-          <Text>1</Text>
+        <View style={styles.wordleContainer}>
+            <View style={styles.wordleApp}>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+                <View style={styles.square}></View>
+            </View>
         </View>
-        <View style={exampleStyles.square}>
-          <Text>2</Text>
-        </View>
-        <View style={exampleStyles.square}>
-          <Text>3</Text>
-        </View>
-      </View>
     ),
   },
   {
-    name: 'Shopping list',
+    name: 'TicTacToe',
     content: (
-      <View style={exampleStyles.listContainer}>
-        <View style={exampleStyles.listWrapper}>
-          <Text style={exampleStyles.listItem}>🍎 Apple </Text>
+      <View></View>
+    ),
+  },
+  {
+    name: 'Statistics',
+    content: (
+      <View style={styles.listContainer}>
+        <View style={styles.listWrapper}>
+          <Text style={styles.listItem}>🍎 Apple </Text>
         </View>
-        <View style={exampleStyles.listWrapper}>
-          <Text style={exampleStyles.listItem}>🍌 Banana</Text>
+        <View style={styles.listWrapper}>
+          <Text style={styles.listItem}>🍌 Banana</Text>
         </View>
-        <View style={exampleStyles.listWrapper}>
-          <Text style={exampleStyles.listItem}>🥖 Bread</Text>
+        <View style={styles.listWrapper}>
+          <Text style={styles.listItem}>🥖 Bread</Text>
         </View>
       </View>
     ),
@@ -149,7 +162,7 @@ const TableOfContentsElement = ({
   visibleIndex,
   sectionCardsRef,
 }) => {
-  const textColor = useThemedTextStyle();
+  const textColor = '#000000';
   const borderColor = textColor.color 
   const style = useSelectedStyle(visibleIndex, index, borderColor);
 
@@ -251,7 +264,7 @@ const SectionCards = ({
   sectionCardsRef,
   tableOfContentsRef,
 }) => {
-  const textColor = useThemedTextStyle();
+  const textColor = '#000000';
   const heights = sections.map((_) => SECTION_HEIGHT);
 
   const getOffsetStarts = () =>
