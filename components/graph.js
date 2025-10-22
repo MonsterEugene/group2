@@ -3,17 +3,23 @@ import { FlatList } from "react-native";
 import { View } from "react-native";
 
 export default function BarGraph({ size, d }) {
-    let rig = d.length - 1;
+    
     let sig = size / d.length - 1;
-
+    let maxAmo = 1;
+    for(let i=0; i< d.length; i++){
+        
+        if (maxAmo< d[i].amo){
+            maxAmo=d[i].amo;
+        }
+    }
     const sigma= d.map((data) => (
           <Rect
             key={data.key} // The key is crucial for performance
             
             
-            x={data.key+2+sig*data.key}
+            x={data.key+size/50 +sig*data.key}
             y={size} 
-            height={-data.amo*size/10} 
+            height={-data.amo*size/maxAmo} 
             width={sig}
             fill={"red"}
             
@@ -43,10 +49,10 @@ export default function BarGraph({ size, d }) {
         return <Rect x={itemData.item.key+2+sig*itemData.item.key} y={size} width={sig} height={-itemData.item.amo*size/10} fill={"red"}/>
     }}/> */
     return <View><Svg width={size} height={size} id="mySvg">
-        <Line x1={0} y1={size} x2={0} y2={0} strokeWidth={2} stroke={'black'} />
+        <Line x1={0} y1={size} x2={0} y2={0} strokeWidth={size/50} stroke={'black'} />
 
         {sigma}
 
-        <Line x1={0} y1={size} x2={size} y2={size} strokeWidth={2} stroke={'black'} />
+        <Line x1={0} y1={size} x2={size} y2={size} strokeWidth={size/50} stroke={'black'} />
     </Svg></View>
 }
