@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
-import React, { useRef, useState } from 'react';
+import React, { Children, useRef, useState } from 'react';
 // import useThemedTextStyle from '@site/src/hooks/useThemedTextStyle';
 import { Pressable, StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import Animated, {
@@ -108,6 +108,7 @@ const SECTIONS = [
         />
       </View>
     ),
+    path: 'games/wordle'
   },
   {
     name: 'TicTacToe',
@@ -119,6 +120,7 @@ const SECTIONS = [
         />
       </View>
     ),
+    path: 'games/tic'
   },
   {
     name: 'Statistics',
@@ -290,7 +292,7 @@ const SectionCards = ({
         <Animated.Text style={[sectionCardStyles.header, textColor]}>
           {item.name}
         </Animated.Text>
-        <SectionCardsElement>
+        <SectionCardsElement name={item.name}>
           <Text style={sectionCardStyles.content}>{item.content}</Text>
         </SectionCardsElement>
       </View>
@@ -321,19 +323,21 @@ const getRandomBrandColor = () => {
   return BRAND_COLORS[colorIndex];
 };
 
-const SectionCardsElement = ({ children }) => {
+const SectionCardsElement = ({ children, name }) => {
   const [backgroundColor, setBackgroundColor] = useState(getRandomBrandColor());
-
+  const path = {name}
   return (
     <View style={[sectionCardStyles.container, { backgroundColor }]}>
       {children}
-      <Pressable
+      <Link
         style={sectionCardStyles.button}
-        onPress={() => setBackgroundColor(getRandomBrandColor())}>
+        href={'games/'+{name}}
+        // onPress={() => setBackgroundColor(getRandomBrandColor())}
+        >
         <Text style={sectionCardStyles.buttonText}>
-          Toggle section color 🎨
+          {name}
         </Text>
-      </Pressable>
+      </Link>
     </View>
   );
 };
