@@ -2,7 +2,7 @@ import { Link } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
 import React, { useRef, useState } from 'react';
 // import useThemedTextStyle from '@site/src/hooks/useThemedTextStyle';
-import { Pressable, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { Pressable, StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -50,19 +50,20 @@ import Animated, {
 // })
 
 const styles = StyleSheet.create({
-  wordleContainer: {
+  container: {
     display: 'flex',
     flexDirection: 'row',
     gap: 16,
   },
-  wordleApp: {
+  imageContainer: {
     display: 'flex',
     // backgroundColor: '#e0cb6eff',
-    width: 280,
+    width: 300,
     height: 300,
     justifyContent: 'space-evenly',
     flexWrap: 'wrap',
     gap: 30,
+    padding: 20,
   },
   square: {
     display: 'flex',
@@ -100,40 +101,33 @@ const SECTIONS = [
   {
     name: 'Wordle',
     content: (
-        <View style={styles.wordleContainer}>
-            <View style={styles.wordleApp}>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-                <View style={styles.square}></View>
-            </View>
-        </View>
+      <View style={styles.container}>
+        <Image
+          style={styles.imageContainer}
+          source={require('../assets/wordle logo.png')}
+        />
+      </View>
     ),
   },
   {
     name: 'TicTacToe',
     content: (
-      <View></View>
+      <View style={styles.container}>
+        <Image
+          style={styles.imageContainer}
+          source={require('../assets/tictactoe-icon.png')}
+        />
+      </View>
     ),
   },
   {
     name: 'Statistics',
     content: (
-      <View style={styles.listContainer}>
-        <View style={styles.listWrapper}>
-          <Text style={styles.listItem}>🍎 Apple </Text>
-        </View>
-        <View style={styles.listWrapper}>
-          <Text style={styles.listItem}>🍌 Banana</Text>
-        </View>
-        <View style={styles.listWrapper}>
-          <Text style={styles.listItem}>🥖 Bread</Text>
-        </View>
+      <View style={styles.container}>
+        <Image
+          style={styles.imageContainer}
+          source={require('../assets/graph-icon.png')}
+        />
       </View>
     ),
   },
@@ -163,7 +157,7 @@ const TableOfContentsElement = ({
   sectionCardsRef,
 }) => {
   const textColor = '#000000';
-  const borderColor = textColor.color 
+  const borderColor = textColor.color
   const style = useSelectedStyle(visibleIndex, index, borderColor);
 
 
