@@ -6,6 +6,6 @@ import BarGraph from '../components/graph';
 export default function App(){
     return <View>
         <Text>hello</Text>
-        <BarGraph/>
+        <BarGraph size={100} d={[{key:0, amo: 1}, {key:1, amo:3}, {key:2, amo:5}, {key:3, amo:10}, {key:4, amo:3}, {key:5, amo:1}]}/>
     </View>
 } 
