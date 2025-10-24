@@ -11,8 +11,8 @@ import Animated, {
 
 export default function TicTacToe() {
     return (
-        <View style={styles.container}>
-            <Text>test</Text>
+        <View>
+            <Text>tictactoe</Text>
         </View>
     )
 }

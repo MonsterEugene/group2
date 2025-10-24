@@ -12,7 +12,7 @@ import Animated, {
 export default function Wordle() {
     return (
         <View style={styles.container}>
-            <Text>test</Text>
+            <Text>wordle</Text>
         </View>
     )
 }

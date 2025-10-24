@@ -132,6 +132,7 @@ const SECTIONS = [
         />
       </View>
     ),
+    path: 'test'
   },
 ];
 
@@ -292,7 +293,7 @@ const SectionCards = ({
         <Animated.Text style={[sectionCardStyles.header, textColor]}>
           {item.name}
         </Animated.Text>
-        <SectionCardsElement name={item.name}>
+        <SectionCardsElement name={item.name} path={item.path}>
           <Text style={sectionCardStyles.content}>{item.content}</Text>
         </SectionCardsElement>
       </View>
@@ -323,19 +324,18 @@ const getRandomBrandColor = () => {
   return BRAND_COLORS[colorIndex];
 };
 
-const SectionCardsElement = ({ children, name }) => {
+const SectionCardsElement = ({ children, name, path }) => {
   const [backgroundColor, setBackgroundColor] = useState(getRandomBrandColor());
-  const path = {name}
   return (
     <View style={[sectionCardStyles.container, { backgroundColor }]}>
       {children}
       <Link
         style={sectionCardStyles.button}
-        href={'games/'+{name}}
+        href={path}
         // onPress={() => setBackgroundColor(getRandomBrandColor())}
         >
         <Text style={sectionCardStyles.buttonText}>
-          {name}
+          Go to {name}
         </Text>
       </Link>
     </View>
@@ -357,7 +357,7 @@ const sectionCardStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   content: {
-    color: '#001a72',
+    color: '#a9b6e2ff',
   },
   button: {
     backgroundColor: '#f8f9ff',
@@ -366,6 +366,7 @@ const sectionCardStyles = StyleSheet.create({
   },
   buttonText: {
     color: '#001a72',
+    fontFamily: '',
     padding: '0.5rem',
   },
 });
