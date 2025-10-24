@@ -3,5 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 
 
 export default function App(){
-    return(<Text> hi </Text>);
+    return(
+        <View> 
+    <Text> hi </Text>
+    <Link href = "games/wordle"> wordle </Link>
+    </View>
+);
 } 
