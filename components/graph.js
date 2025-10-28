@@ -22,7 +22,7 @@ export default function BarGraph({ size, d }) {
                 //key={data.key} // The key is crucial for performance
 
 
-                x={data.key + size / 50 + sig * data.key}
+                x={data.key + size / 50 + sig * data.key- size/125}
                 y={size}
                 height={-data.amo * size / maxAmo}
                 width={sig}
