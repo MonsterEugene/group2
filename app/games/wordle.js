@@ -41,6 +41,7 @@
 		}else{
 			winArray[count-1]++; 
 		}
+		displayGuess()
 		
 		}
 
@@ -81,7 +82,7 @@
 			<View>
 				<TextInput onChangeText = {setGuess}>Guess here</TextInput>
 				
-				<Button	title = "Guess" onPress = {() => <Guess guess = {g} word = "ghost"> </Guess>}> </Button>
+				<Button	title = "MEOWW" onPress = {() => <Guess guess = {g} word = "ghost"> </Guess>}> </Button>
 
 			</View>
 		);
