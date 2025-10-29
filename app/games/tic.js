@@ -16,7 +16,7 @@ export default function TicTacToe() {
       <View style={{ ...styles.press, marginRight: 285, marginBottom: 285}}> {/*1*/}
         {claimed[0] ? (
           <Image 
-            source={require('../assets/X.png')} 
+            source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
         )
@@ -51,7 +51,7 @@ export default function TicTacToe() {
         <Pressable onPress={move}/>
       </View>
       <Image 
-        source={require('../assets/grid.png')} 
+        source={require('../../assets/grid.png')} 
         style={styles.image} 
       />
     </View>
