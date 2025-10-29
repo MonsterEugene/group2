@@ -1,3 +1,4 @@
+//someone make colors please!!!! 
 import { Link } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
 import React, { useRef, useState } from 'react';
@@ -9,10 +10,10 @@ import Animated, {
 } from 'react-native-reanimated';
 
 
-export default function TicTacToe() {
+export default function Colors() {
     return (
-        <View>
-            <Text>tictactoe</Text>
+        <View style={styles.container}>
+            <Text>test</Text>
         </View>
     )
 }
