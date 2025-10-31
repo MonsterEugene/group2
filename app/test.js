@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
 import React, { useRef, useState } from 'react';
+import BarGraph from '../components/graph';
 // import useThemedTextStyle from '@site/src/hooks/useThemedTextStyle';
 import { Pressable, StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import Animated, {
@@ -9,10 +10,11 @@ import Animated, {
 } from 'react-native-reanimated';
 
 
-export default function Wordle() {
+export default function Test() {
     return (
         <View style={styles.container}>
             <Text>test</Text>
+            <BarGraph size={300} d={[{key:0, amo: 1}, {key:1, amo: 5}, {key:2, amo: 6},{key:3, amo: 0}, {key:4, amo: 6}, {key:5, amo: 6}]}></BarGraph>
         </View>
     )
 }

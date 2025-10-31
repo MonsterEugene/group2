@@ -8,47 +8,6 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
-
-// export default function App() {
-//     return (
-//         <View style={styles.container}>
-//             <View style={styles.headerContainer}>
-//                 <Text style={styles.headerText}>Placeholder</Text>
-//             </View>
-//             <View style={styles.bodyContainer}>
-//                 <Link href='tic'>TicTacToe</Link>
-//                 <Link href='wordle'>Wordle</Link>
-//                 <Link href=''>Statistics</Link>
-//             </View>
-//         </View>
-//     )
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         // alignContent: '',
-//     },
-//     headerContainer: {
-//         flex: 1,
-//         backgroundColor: '#4e4e4eff',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//     },
-//     headerText: {
-//         fontSize: 32,
-//         fontFamily: 'Arial',
-//         color: '#ffffffff'
-//     },
-//     bodyContainer: {
-//         flex: 5,
-//         backgroundColor: '#6d6d6dff',
-//         justifyContent: 'space-evenly',
-//         alignItems: 'center',
-//     },
-// })
-
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
@@ -268,6 +227,7 @@ const SectionCards = ({
     heights.map((v, i) => heights.slice(0, i).reduce((x, acc) => x + acc, 0));
 
   const onScroll = (event) => {
+    // Extract the needed value immediately
     const offset = event.nativeEvent?.contentOffset?.y;
 
     if (offset !== undefined) {
@@ -286,6 +246,25 @@ const SectionCards = ({
       visibleIndex.value = newIndex;
     }
   };
+
+  // Create a debounced version of the function that only accepts the offset value to stop warning
+  const debouncedOnScroll = debounce((offset) => {
+      if (offset !== undefined) {
+          const distancesFromTop = getOffsetStarts().map((v) =>
+              Math.abs(v - offset)
+          );
+          const newIndex = distancesFromTop.indexOf(
+              Math.min.apply(null, distancesFromTop)
+          );
+          if (visibleIndex.value !== newIndex) {
+              tableOfContentsRef.current?.scrollToIndex({
+                  index: newIndex,
+                  animated: true,
+              });
+          }
+          visibleIndex.value = newIndex;
+      }
+  });
 
   const renderItem = ({ item }) => {
     return (
@@ -309,11 +288,12 @@ const SectionCards = ({
         renderItem={renderItem}
         data={sections}
         extraData={textColor}
-        onScrollBeginDrag={onScroll}
-        onScrollEndDrag={onScroll}
-        onScroll={debounce(onScroll)}
-        onMomentumScrollBegin={onScroll}
-        onMomentumScrollEnd={onScroll}
+        onScrollBeginDrag={onScroll} // Use original onScroll for immediate events
+        onScrollEndDrag={onScroll} // Use original onScroll for immediate events
+        // Pass only the data needed (the offset) to the debounced function
+        onScroll={(event) => debouncedOnScroll(event.nativeEvent?.contentOffset?.y)}
+        onMomentumScrollBegin={onScroll} // Use original onScroll for immediate events
+        onMomentumScrollEnd={onScroll} // Use original onScroll for immediate events
       />
     </View>
   );
