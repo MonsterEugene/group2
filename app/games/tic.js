@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, Pressable, Image, } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ScrollView } from 'react-native';
 import { useState } from 'react'; 
+import BarGraph from "../../components/graph.js"
 
 export default function TicTacToe() {
   const [gameBoard, setGameBoard] = useState(["-", "-", "-", "-", "-", "-", "-", "-", "-"]);
   const [claimed, setClaimed] = useState([false, false, false, false, false, false, false, false, false]);
   const [winnah, setWinnah] = useState(null);
+  const [wins, setWins] = useState([0, 0])
 
   const aiRng = (currentClaimed) => {
     // Collect all available indices
@@ -82,7 +84,12 @@ export default function TicTacToe() {
         setWinnah(winnerStatus);
     }
   };
-
+  const getWinnerText = () => {
+    if (winnah === 1) return "YOU WIN!";
+    if (winnah === 2) return "YOU LOST!";
+    if (winnah === 0) return "IT'S A DRAW!";
+    return null
+  };
   // Helper component for rendering Pressable cells
   const Cell = ({ index, onPress }) => (
     <Pressable
@@ -111,12 +118,6 @@ export default function TicTacToe() {
     </Pressable>
   );
   
-  const getWinnerText = () => {
-    if (winnah === 1) return "X WINS!";
-    if (winnah === 2) return "O WINS!";
-    if (winnah === 0) return "DRAW!";
-    return null;
-  };
 
 //   return(
 //     <View style={styles.container}>
@@ -138,296 +139,214 @@ export default function TicTacToe() {
 //   );
 // }
   
-  const gameWin = () => {
-    for(let i = "X"; true; i = "O"){
-      if(gameBoard[0] == i && gameBoard[1] == i && gameBoard[2] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[3] == i && gameBoard[4] == i && gameBoard[5] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[6] == i && gameBoard[7] == i && gameBoard[8] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[0] == i && gameBoard[3] == i && gameBoard[6] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[1] == i && gameBoard[4] == i && gameBoard[7] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[2] == i && gameBoard[5] == i && gameBoard[8] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[0] == i && gameBoard[4] == i && gameBoard[8] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-      else if(gameBoard[2] == i && gameBoard[4] == i && gameBoard[6] == i){
-        if(i == "X"){
-          winnah = true
-          break
-        }
-        else{
-          winnah = false
-          break
-        }
-      }
-    }
-  }
 
   return(
     <View style = {styles.container}>
       {/* This is still invalid syntax and won't work in React Native: */}
-      if(winnah){ 
-        <Text style={styles.win}>YOU WIN!</Text>
-      }
+        {getWinnerText() && (
+          <Text style={styles.winText}>{getWinnerText()}</Text>
+        )}
 
-      <Image 
-        source={require('../../assets/grid.png')} 
-        style={styles.image} 
-      />
+        <Image 
+          source={require('../../assets/grid.png')} 
+          style={styles.image} 
+        />
+        
+        {/* --- INDEX 0 FIX --- */}
+        <Pressable
+          onPress={
+            () => {move(0)}
+          }
+          style={{ ...styles.press, marginRight: 285, marginBottom: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[0] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[0] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(1)}
+          }
+          style={{ ...styles.press, marginBottom: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[1] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[1] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(2)}
+          }
+          style={{ ...styles.press, marginLeft: 285, marginBottom: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[2] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[2] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(3)}
+          }
+          style={{ ...styles.press, marginRight: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[3] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[3] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )} 
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(4)}
+          }
+          style={{ ...styles.press}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[4] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[4] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(5)}
+          }
+          style={{ ...styles.press, marginLeft: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[5] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[5] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )} 
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(6)}
+          }
+          style={{ ...styles.press, marginRight: 285, marginTop: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[6] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[6] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(7)}
+          }
+          style={{ ...styles.press, marginTop: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[7] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[7] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )} 
+        </Pressable>
+        <Pressable
+          onPress={
+            () => {move(8)}
+          }
+          style={{ ...styles.press, marginLeft: 285, marginTop: 285}}
+        >
+          {/* We use gameBoard[0] instead of claimed[0] */}
+          {gameBoard[8] === 'X' && (
+            <Image 
+              source={require('../../assets/X.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+          {/* ADDED: A check for 'O' */}
+          {gameBoard[8] === 'O' && (
+            <Image 
+              source={require('../../assets/O.png')} 
+              style={{width: 100, height: 100}} 
+            />
+          )}
+        </Pressable> 
+
+      {/* <View>
+        <BarGraph size={400} d={[{key: 0, amo: wins[0]}, {key: 1, amo: wins[1]}]}> </BarGraph>
+      </View> */}
       
-      {/* --- INDEX 0 FIX --- */}
-      <Pressable
-        onPress={
-          () => {move(0)}
-        }
-        style={{ ...styles.press, marginRight: 285, marginBottom: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[0] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[0] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-      </Pressable>
-
-      {/* --- INDEX 0 FIX --- */}
-      <Pressable
-        onPress={
-          () => {move(1)}
-        }
-        style={{ ...styles.press, marginBottom: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[1] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[1] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={
-          () => {move(2)}
-        }
-        style={{ ...styles.press, marginLeft: 285, marginBottom: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[2] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[2] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-      </Pressable>
-      <Pressable
-        onPress={
-          () => {move(3)}
-        }
-        style={{ ...styles.press, marginRight: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[3] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[3] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )} 
-      </Pressable>
-      <Pressable
-        onPress={
-          () => {move(4)}
-        }
-        style={{ ...styles.press}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[4] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[4] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-      </Pressable>
-      <Pressable
-        onPress={
-          () => {move(5)}
-        }
-        style={{ ...styles.press, marginLeft: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[5] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[5] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )} 
-      </Pressable>
-      <Pressable
-        onPress={
-          () => {move(6)}
-        }
-        style={{ ...styles.press, marginRight: 285, marginTop: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[6] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[6] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-      </Pressable>
-      <Pressable
-        onPress={
-          () => {move(7)}
-        }
-        style={{ ...styles.press, marginTop: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[7] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[7] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )} 
-      </Pressable>
-      <Pressable
-        onPress={
-          () => {move(8)}
-        }
-        style={{ ...styles.press, marginLeft: 285, marginTop: 285}}
-      >
-        {/* We use gameBoard[0] instead of claimed[0] */}
-        {gameBoard[8] === 'X' && (
-          <Image 
-            source={require('../../assets/X.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-        {/* ADDED: A check for 'O' */}
-        {gameBoard[8] === 'O' && (
-          <Image 
-            source={require('../../assets/O.png')} 
-            style={{width: 100, height: 100}} 
-          />
-        )}
-      </Pressable>
     </View>
   )
 }
@@ -439,14 +358,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  grid: {
+    justifyContent: 'center'
+  },
+  scrollView: {
+    backgroundColor: 'pink',
+    flexGrow: 1,
+  },
   press: {
     width: 100,
     height: 100,
     position: 'absolute'
   },
-  win: {
-    height: 500,
-    width: 100,
-    position: 'absolute'
-  }
+  winText: {
+    justifyContent: 'center',
+    position: 'absolute',
+    fontSize: 100,
+    marginBottom: 550
+  },
 });
