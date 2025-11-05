@@ -93,6 +93,18 @@ const SECTIONS = [
     ),
     path: 'test'
   },
+  {
+    name: 'Memory Game',
+    content: (
+      <View style={styles.container}>
+        <Image
+          style={styles.imageContainer}
+          source={require('../assets/memory-icon.png')}
+        />
+      </View>
+    ),
+    path: 'games/memory'
+  },
 ];
 
 function debounce(func, timeout = 100) {
