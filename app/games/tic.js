@@ -4,116 +4,219 @@ import { useState } from 'react';
 export default function TicTacToe() {
   const [gameBoard, setGameBoard] = useState(["-", "-", "-", "-", "-", "-", "-", "-", "-"]);
   const [claimed, setClaimed] = useState([false, false, false, false, false, false, false, false, false]);
-  const winnah = false;
+  const [winnah, setWinnah] = useState(null);
 
-  const aiRng = () => {
-    let newClaimed = [...claimed]
-    let newGameBoard = [...gameBoard]
-    let o = Math.random() * 9
-    let claimed = newClaimed[o]
-    while (claimed) {
-      o = Math.random() * 9
-      claimed = newClaimed[o]
+  const aiRng = (currentClaimed) => {
+    // Collect all available indices
+    const availableIndices = currentClaimed
+      .map((isClaimed, index) => isClaimed ? null : index)
+      .filter(index => index !== null);
+      
+    if (availableIndices.length === 0) {
+      return null; // No available moves
     }
-    return o
-  }
+
+    // Pick a random index from the available ones
+    const randomIndex = Math.floor(Math.random() * availableIndices.length);
+    return availableIndices[randomIndex];
+  };
+
+  const checkWinCondition = (board) => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6],             // Diagonals
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (board[a] !== '-' && board[a] === board[b] && board[a] === board[c]) {
+        // Return 1 for X win, 2 for O win
+        return board[a] === 'X' ? 1 : 2; 
+      }
+    }
+    
+    // Check for draw if no winner and all cells are claimed
+    if (board.every(cell => cell !== '-')) {
+      return 0; // Draw
+    }
+
+    return null; // Game ongoing
+  };
 
   const move = (x) => {
-    let newClaimed = [...claimed]
-    let newGameBoard = [...gameBoard]
-    newGameBoard[x] = "X"
-    newClaimed[x] = true
-    setClaimed(newClaimed)
-    setGameBoard(newGameBoard)
+    // Only allow move if game is ongoing and cell is unclaimed
+    if (winnah !== null || claimed[x]) {
+      return;
+    }
 
-    const o = aiRng()
-    let aiClaimed = [...claimed]
-    let aiGameBoard = [...gameBoard]
-    aiGameBoard[o] = "O"
-    aiClaimed[o] = true
-    setClaimed(aiClaimed)
-    setGameBoard(aiGameBoard)
-  }
+    let updatedGameBoard = [...gameBoard];
+    let updatedClaimed = [...claimed];
+    
+    // Player X move
+    updatedGameBoard[x] = "X";
+    updatedClaimed[x] = true;
+    
+    // Check if X won immediately
+    let winnerStatus = checkWinCondition(updatedGameBoard);
+    if (winnerStatus !== null) {
+      setGameBoard(updatedGameBoard);
+      setClaimed(updatedClaimed);
+      setWinnah(winnerStatus);
+      return; // End game
+    }
+
+    // AI O move (make sure we use the most recent board/claimed state)
+    const o = aiRng(updatedClaimed);
+    
+    if (o !== null) {
+        updatedGameBoard[o] = "O";
+        updatedClaimed[o] = true;
+        winnerStatus = checkWinCondition(updatedGameBoard);
+    }
+    
+    setGameBoard(updatedGameBoard);
+    setClaimed(updatedClaimed);
+    
+    if (winnerStatus !== null) {
+        setWinnah(winnerStatus);
+    }
+  };
+
+  // Helper component for rendering Pressable cells
+  const Cell = ({ index, onPress }) => (
+    <Pressable
+      onPress={onPress}
+      // Styles need adjustment based on layout logic
+      style={{
+        ...styles.press,
+        // Simplified layout offsets (you may need to tweak these based on your grid image size)
+        top: Math.floor(index / 3) * 120 - 120, 
+        left: (index % 3) * 120 - 120,
+      }}
+      disabled={claimed[index] || winnah !== null} // Disable presses if claimed or game over
+    >
+      {claimed[index] && gameBoard[index] === 'X' && (
+        <Image 
+          source={require('../../assets/X.png')} // Make sure this path is correct
+          style={{width: 100, height: 100}} 
+        />
+      )}
+      {claimed[index] && gameBoard[index] === 'O' && (
+        <Image 
+          source={require('../../assets/O.png')} // !!! You NEED this asset for the AI to show up !!!
+          style={{width: 100, height: 100}} 
+        />
+      )}
+    </Pressable>
+  );
+  
+  const getWinnerText = () => {
+    if (winnah === 1) return "X WINS!";
+    if (winnah === 2) return "O WINS!";
+    if (winnah === 0) return "DRAW!";
+    return null;
+  };
+
+//   return(
+//     <View style={styles.container}>
+//       {/* This is how you correctly render conditionally in JSX */}
+//       {getWinnerText() && (
+//         <Text style={styles.win}>{getWinnerText()}</Text>
+//       )}
+      
+//       <Image 
+//         source={require('../../assets/grid.png')} // Make sure this path is correct
+//         style={styles.image} 
+//       />
+      
+//       {/* Use a loop or map to generate the 9 cells instead of repeating them */}
+//       {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(index => (
+//         <Cell key={index} index={index} onPress={() => move(index)} />
+//       ))}
+//     </View>
+//   );
+// }
   
   const gameWin = () => {
     for(let i = "X"; true; i = "O"){
       if(gameBoard[0] == i && gameBoard[1] == i && gameBoard[2] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[3] == i && gameBoard[4] == i && gameBoard[5] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[6] == i && gameBoard[7] == i && gameBoard[8] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[0] == i && gameBoard[3] == i && gameBoard[6] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[1] == i && gameBoard[4] == i && gameBoard[7] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[2] == i && gameBoard[5] == i && gameBoard[8] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[0] == i && gameBoard[4] == i && gameBoard[8] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
       else if(gameBoard[2] == i && gameBoard[4] == i && gameBoard[6] == i){
         if(i == "X"){
-          winnah = 1
+          winnah = true
           break
         }
         else{
-          winnah = 2
+          winnah = false
           break
         }
       }
@@ -122,54 +225,82 @@ export default function TicTacToe() {
 
   return(
     <View style = {styles.container}>
-      if(winnah){
+      {/* This is still invalid syntax and won't work in React Native: */}
+      if(winnah){ 
         <Text style={styles.win}>YOU WIN!</Text>
       }
+
       <Image 
         source={require('../../assets/grid.png')} 
         style={styles.image} 
       />
+      
+      {/* --- INDEX 0 FIX --- */}
       <Pressable
         onPress={
           () => {move(0)}
         }
         style={{ ...styles.press, marginRight: 285, marginBottom: 285}}
       >
-        {claimed[0] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[0] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[0] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )}
       </Pressable>
+
+      {/* --- INDEX 0 FIX --- */}
       <Pressable
         onPress={
           () => {move(1)}
         }
         style={{ ...styles.press, marginBottom: 285}}
       >
-        {claimed[1] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[1] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[1] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )}
       </Pressable>
+
       <Pressable
         onPress={
           () => {move(2)}
         }
         style={{ ...styles.press, marginLeft: 285, marginBottom: 285}}
       >
-        {claimed[2] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[2] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[2] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )}
       </Pressable>
       <Pressable
         onPress={
@@ -177,13 +308,20 @@ export default function TicTacToe() {
         }
         style={{ ...styles.press, marginRight: 285}}
       >
-        {claimed[3] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[3] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[3] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )} 
       </Pressable>
       <Pressable
         onPress={
@@ -191,13 +329,20 @@ export default function TicTacToe() {
         }
         style={{ ...styles.press}}
       >
-        {claimed[4] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[4] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[4] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )}
       </Pressable>
       <Pressable
         onPress={
@@ -205,13 +350,20 @@ export default function TicTacToe() {
         }
         style={{ ...styles.press, marginLeft: 285}}
       >
-        {claimed[5] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[5] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[5] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )} 
       </Pressable>
       <Pressable
         onPress={
@@ -219,13 +371,20 @@ export default function TicTacToe() {
         }
         style={{ ...styles.press, marginRight: 285, marginTop: 285}}
       >
-        {claimed[6] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[6] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[6] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )}
       </Pressable>
       <Pressable
         onPress={
@@ -233,13 +392,20 @@ export default function TicTacToe() {
         }
         style={{ ...styles.press, marginTop: 285}}
       >
-        {claimed[7] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[7] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[7] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )} 
       </Pressable>
       <Pressable
         onPress={
@@ -247,17 +413,23 @@ export default function TicTacToe() {
         }
         style={{ ...styles.press, marginLeft: 285, marginTop: 285}}
       >
-        {claimed[8] && (
+        {/* We use gameBoard[0] instead of claimed[0] */}
+        {gameBoard[8] === 'X' && (
           <Image 
             source={require('../../assets/X.png')} 
             style={{width: 100, height: 100}} 
           />
-        )
-        } 
+        )}
+        {/* ADDED: A check for 'O' */}
+        {gameBoard[8] === 'O' && (
+          <Image 
+            source={require('../../assets/O.png')} 
+            style={{width: 100, height: 100}} 
+          />
+        )}
       </Pressable>
     </View>
   )
-  
 }
 
 const styles = StyleSheet.create({
