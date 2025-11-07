@@ -1,39 +1,68 @@
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, StyleSheet } from "react-native";
 import { useState } from "react";
-import {BarGraph} from '../../components/graph';
-
-const [current, setCurrent] = useState(2);
-const [sig, setsig] = useState(0);
-const [d, setd ] = useState([{key:1, value: 1, pos: 1}]); // position bounded on 1 > pos > 20
-let arr = new Array(20).fill(false);
-
-function newButtons(){
-    d.setd([]);
-    for (let i =1; i <= current; i++){
-        let obj = {key: i, value: i, pos: genPos() };
-        d.setd([...d, obj] )
-    }
-    setCurrent(...current++);
-}
-function genPos(){
-    let pos = Math.floor(Math.random() * 20) + 1;
-    if (arr[pos]==false ){
-        arr[pos] = true;
-        return pos;
-    }else{
-        genPos();
-    }
-}
+import { BarGraph } from '../../components/graph';
 
 
 export default function chimppps() {
-    
-    
-   
-    const sigma = d.map((data) => (
-        <View key={data.key}>
-            <Pressable>
+    const [cur, setCur] = useState(0);
+    const [bval, setbval] = useState(1);
+    const [d, setd] = useState([]); // position bounded on 1 > pos > 20
+    let arr = new Array(20).fill(false);
+    const [losses, setlosses] = useState(0);
 
+    //sets d to be new arr with new random positioned buttons the increments current
+    function newButtons() {
+        console.log ("cur beg:" + cur);
+        console.log("1st dlength " + d.length);
+        setd(d => []);
+        console.log("2nd dlength " + d.length);
+        arr.fill(false);
+        for (let i = 1; i <= cur; i++) {
+            let obj = { key: i, value: i, pos: genPos() };
+            setd([...d, obj])
+        }
+        //let temp = current++;
+        setCur(cur => cur + 1);
+        console.log("cur end:" + cur);
+    }
+
+    //generates unique number 1-20
+    function genPos() {
+        let pos = Math.floor(Math.random() * 20) + 1;
+        if (arr[pos] == false) {
+            arr[pos] = true;
+            return pos;
+        } else {
+            genPos();
+        }
+    }
+
+    const sigma = d.map((data) => (
+        <View key={data.key} style={styles.gridItem}>
+            <Pressable onPress={() => {
+                if (bval === data.key) {
+                    const newD = d.slice(1);
+                    setd(newD);
+
+
+                    if (d.length == 0) {
+                        //last button is pressed
+
+                        newButtons();
+
+                    }
+                } else {
+                    setlosses(losses => losses + 1) //way to increment
+
+                    if (losses === 3) {
+                        //lose state
+                        setCur(1);
+                        newButtons();
+                        setlosses(0);
+                    }
+                }
+            }}>
+                <Text> {data.key} </Text>
             </Pressable>
         </View>
 
@@ -41,7 +70,45 @@ export default function chimppps() {
 
     return (
         <View>
-            {sigma}
+            <View style={styles.button}>
+                <Pressable onPress={() => {
+                    setCur(cur => 0);
+                    setlosses(0);
+                    newButtons();
+                }}>
+                    <Text>Restart</Text>
+                </Pressable>
+            </View>
+            <Text>losses: {losses} </Text>
+
+            <View style={styles.container}>
+                {sigma}
+            </View>
+
         </View>
     )
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around', // Distribute items evenly
+        padding: 10,
+    },
+    gridItem: {
+        width: '16%', // Approximately 5 items per row with spacing
+        aspectRatio: 1, // Make items square
+        backgroundColor: '#e0e0e0',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 5,
+        borderRadius: 8,
+    },
+    button:{
+        width: '20%',
+        aspectRatio:1,
+
+    }
+})

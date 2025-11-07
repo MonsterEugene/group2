@@ -92,6 +92,17 @@ const SECTIONS = [
       </View>
     ),
     path: 'test'
+  },{
+    name: 'Chimp Game',
+    content: (
+      <View style={styles.container}>
+        <Image
+          style={styles.imageContainer}
+          source={require('../assets/graph-icon.png')}
+        />
+      </View>
+    ),
+    path: 'games/chimpGame'
   },
 ];
 
