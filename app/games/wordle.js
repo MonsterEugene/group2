@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, TextInput, Keyboard } from 'react-native';
+import BarGraph from "../../components/graph.js"; 
 
 const WORDS = ['PIANO', 'LIGHT', 'STORM', 'BRAVE', 'CRANE', 'SLATE', 'ABOUT', 'STEAL', 'GREAT', 'PLANT'];
 //we can add more wrods for funsies 
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
+let wins = [0,0,0,0,0,0]; 
 
+
+function scroll(){
+  const scrollContainer = {
+    height: '300px', 
+    width: '100%', 
+    overflowY: 'scroll',
+    border: '1px solid #ccc',
+    padding: '10px'
+  }; 
+
+
+  } 
+ 
 export default function App() {
   const [target, setTarget] = useState(() => WORDS[Math.floor(Math.random() * WORDS.length)]);
   const [guesses, setGuesses] = useState([]);
@@ -30,10 +45,12 @@ export default function App() {
 
     if (current === target) {
       setGameOver(true);
+	  wins[newGuesses.length-1]++; 
       showMessage('You won111!!!');
       Keyboard.dismiss();
     } else if (newGuesses.length >= MAX_GUESSES) {
       setGameOver(true);
+	  wins[5]++; 
       showMessage(`ur wrong the word was ${target}`);
       Keyboard.dismiss();
     }
@@ -67,6 +84,7 @@ export default function App() {
   };
 
   return (
+    <View style ={scrollContainer}> 
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       
@@ -140,8 +158,12 @@ export default function App() {
         </TouchableOpacity>
       )}
 
-      
+      <View> 
+          <BarGraph size={400} d={[{key: 0 , amo: wins[0]}, {key: 1 , amo: wins[1]},{key: 2 , amo: wins[2]},
+            {key: 3 , amo: wins[3]},{key: 4 , amo: wins[4]},{key: 5 , amo: wins[5]} ]}> </BarGraph>
+    </View> 
     </SafeAreaView>
+    </View>
   );
 }
 //I LOVE STYLINGGG1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
