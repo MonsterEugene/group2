@@ -1,12 +1,40 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView, Button } from 'react-native';
 import { useState } from 'react';
 import BarGraph from "../../components/graph.js"
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 export default function TicTacToe() {
   const [gameBoard, setGameBoard] = useState(["-", "-", "-", "-", "-", "-", "-", "-", "-"]);
   const [claimed, setClaimed] = useState([false, false, false, false, false, false, false, false, false]);
   const [winnah, setWinnah] = useState(null);
   const [wins, setWins] = useState([0, 0]) //[player, computer]
+  const [IfGraph, setIfGraph] = useState(false)
+
+  function BottomSheet({ isOpen, toggleSheet, duration = 500, children }) {
+    const { colorMode } = useColorMode();
+    const height = useSharedValue(0);
+    const progress = useDerivedValue(() =>
+      withTiming(isOpen.value ? 0 : 1, { duration })
+    );
+
+    const sheetStyle = useAnimatedStyle(() => ({
+      transform: [{ translateY: progress.value * 2 * height.value }],
+    }));
+
+    const backgroundColorSheetStyle = {
+      backgroundColor: colorMode === 'light' ? '#f8f9ff' : '#272B3C',
+    };
+
+    const backdropStyle = useAnimatedStyle(() => ({
+      opacity: 1 - progress.value,
+      zIndex: isOpen.value
+        ? 1
+        : withDelay(duration, withTiming(-1, { duration: 0 })),
+    }));
+  }
 
   const aiRng = (currentClaimed) => {
     // Collect all available indices
@@ -34,7 +62,7 @@ export default function TicTacToe() {
       const [a, b, c] = lines[i];
       if (board[a] !== '-' && board[a] === board[b] && board[a] === board[c]) {
         // Return 1 for X win, 2 for O win
-        if(board[a] == 'X'){
+        if (board[a] == 'X') {
           let winsPlace = [...wins]
           winsPlace[0] += 1 //Add 1 to player count
           setWins(winsPlace)
@@ -54,7 +82,7 @@ export default function TicTacToe() {
     }
 
     return null; // Game ongoing
-  };
+  }
 
   const reload = () => {
     setGameBoard(["-", "-", "-", "-", "-", "-", "-", "-", "-"])
@@ -134,36 +162,17 @@ export default function TicTacToe() {
     </Pressable>
   );
 
-
-  //   return(
-  //     <View style={styles.container}>
-  //       {/* This is how you correctly render conditionally in JSX */}
-  //       {getWinnerText() && (
-  //         <Text style={styles.win}>{getWinnerText()}</Text>
-  //       )}
-
-  //       <Image 
-  //         source={require('../../assets/grid.png')} // Make sure this path is correct
-  //         style={styles.image} 
-  //       />
-
-  //       {/* Use a loop or map to generate the 9 cells instead of repeating them */}
-  //       {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(index => (
-  //         <Cell key={index} index={index} onPress={() => move(index)} />
-  //       ))}
-  //     </View>
-  //   );
-  // }
-
-
   return (
     <View style={styles.container}>
-      <Button 
-        onPress={
-          () => { reload() }
-        }
-        title="Play Again"
-      />
+
+      <View style={styles.reload}>
+        <Button
+          onPress={
+            () => { reload() }
+          }
+          title="Play Again"
+        />
+      </View>
       <Text>
         {wins[0]} - {wins[1]}
       </Text>
@@ -366,11 +375,25 @@ export default function TicTacToe() {
           />
         )}
       </Pressable>
-
-      {/* <View>
-        <BarGraph size={400} d={[{key: 0, amo: wins[0]}, {key: 1, amo: wins[1]}]}> </BarGraph>
-      </View> */}
-
+      <Button
+        onPress={
+          () => setIfGraph(!IfGraph)
+        }
+        title="Show Graph"
+      />
+      {IfGraph && (
+        <View style={styles.graph}>
+          <BarGraph size={300} d={[{ key: 0, amo: wins[0] }, { key: 1, amo: wins[1] }]}> </BarGraph>
+        </View>
+      )}
+      <Animated.View style={[sheetStyles.backdrop, backdropStyle]}>
+        <TouchableOpacity style={styles.flex} onPress={toggleSheet} />
+      </Animated.View>
+      <Animated.View
+        onLayout={(e) => {
+          height.value = e.nativeEvent.layout.height;
+        }}
+      />
     </View>
   )
 }
@@ -383,7 +406,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   grid: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+  },
+  graph: {
+    position: 'absolute',
+    marginLeft: 750
+
   },
   scrollView: {
     backgroundColor: 'pink',
@@ -391,7 +419,8 @@ const styles = StyleSheet.create({
   },
   reload: {
     justifyContent: 'center',
-    marginLeft: 400,
+    position: 'absolute',
+    marginRight: 750
   },
   press: {
     width: 100,
