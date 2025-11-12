@@ -1,10 +1,10 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { useState } from "react";
 import { BarGraph } from '../../components/graph';
-
+import { useEffect } from "react";
 
 export default function chimppps() {
-    const [cur, setCur] = useState(0);
+    const [cur, setCur] = useState(7);
     const [bval, setbval] = useState(1);
     const [d, setd] = useState([]); // position bounded on 1 > pos > 20
     let arr = new Array(20).fill(false);
@@ -12,19 +12,21 @@ export default function chimppps() {
 
     //sets d to be new arr with new random positioned buttons the increments current
     function newButtons() {
-        console.log ("cur beg:" + cur);
-        console.log("1st dlength " + d.length);
         setd(d => []);
-        console.log("2nd dlength " + d.length);
         arr.fill(false);
         for (let i = 1; i <= cur; i++) {
             let obj = { key: i, value: i, pos: genPos() };
-            setd([...d, obj])
+            setd(d => [...d, obj]);
         }
         //let temp = current++;
-        setCur(cur => cur + 1);
-        console.log("cur end:" + cur);
+        //setCur(c => c + 1);
+        
     }
+    useEffect(()=> {
+        newButtons();
+    }, []);
+
+    
 
     //generates unique number 1-20
     function genPos() {
@@ -43,6 +45,7 @@ export default function chimppps() {
                 if (bval === data.key) {
                     const newD = d.slice(1);
                     setd(newD);
+                    setbval(b => b+1);
 
 
                     if (d.length == 0) {
@@ -72,9 +75,21 @@ export default function chimppps() {
         <View>
             <View style={styles.button}>
                 <Pressable onPress={() => {
-                    setCur(cur => 0);
+                    setbval(b =>1);
+                    console.log("before cur chng " +cur);
+                    setCur(1);
+                    console.log("after cur chng " + cur);
                     setlosses(0);
-                    newButtons();
+                    
+                    setd(d => []);
+                    
+                    arr.fill(false);
+                    for (let i = 1; i <= cur; i++) {
+                        let obj = { key: i, value: i, pos: genPos() };
+                        setd(d => [...d, obj]);
+                    }
+                    //let temp = current++;
+                    console.log("pressed restart");
                 }}>
                     <Text>Restart</Text>
                 </Pressable>
@@ -106,9 +121,9 @@ const styles = StyleSheet.create({
         margin: 5,
         borderRadius: 8,
     },
-    button:{
+    button: {
         width: '20%',
-        aspectRatio:1,
+        aspectRatio: 1,
 
     }
 })
