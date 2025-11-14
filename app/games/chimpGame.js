@@ -9,6 +9,7 @@ export default function chimppps() {
     const [d, setd] = useState([]); // position bounded on 1 > pos > 20
     let arr = new Array(20).fill(false);
     const [losses, setlosses] = useState(0);
+    const [idk, setidk] = useState(null);
 
     //sets d to be new arr with new random positioned buttons the increments current
     function newButtons() {
@@ -20,13 +21,18 @@ export default function chimppps() {
         }
         //let temp = current++;
         //setCur(c => c + 1);
-        
+
     }
-    useEffect(()=> {
+    useEffect(() => {
+        console.log("onstart");
+        setCur(1);
         newButtons();
     }, []);
 
-    
+    /*useEffect(()=>{
+        setCur(2);
+    }, [idk]); */
+
 
     //generates unique number 1-20
     function genPos() {
@@ -40,56 +46,62 @@ export default function chimppps() {
     }
 
     const sigma = d.map((data) => (
-        <View key={data.key} style={styles.gridItem}>
-            <Pressable onPress={() => {
-                if (bval === data.key) {
-                    const newD = d.slice(1);
-                    setd(newD);
-                    setbval(b => b+1);
+        <Pressable key={data.key} style={styles.gridItem} onPress={() => {
+            if (bval === data.key) {
+                const newD = d.slice(1);
+                setd(newD);
+                setbval(b => b + 1);
 
 
-                    if (d.length == 0) {
-                        //last button is pressed
+                if (d.length == 1) {
+                    //last button is pressed
 
-                        newButtons();
+                    newButtons();
 
-                    }
-                } else {
-                    setlosses(losses => losses + 1) //way to increment
-
-                    if (losses === 3) {
-                        //lose state
-                        setCur(1);
-                        newButtons();
-                        setlosses(0);
-                    }
                 }
-            }}>
+            } else {
+                setlosses(losses => losses + 1) //way to increment
+
+                if (losses === 3) {
+                    //lose state
+                    setCur(1);
+                    newButtons();
+                    setlosses(0);
+                }
+            }
+        }}>
+            <View >
+
                 <Text> {data.key} </Text>
-            </Pressable>
-        </View>
+
+            </View>
+        </Pressable>
 
     ))
 
     return (
         <View>
-            <View style={styles.button}>
+            <View style={styles.button} id="restart button">
                 <Pressable onPress={() => {
-                    setbval(b =>1);
-                    console.log("before cur chng " +cur);
-                    setCur(1);
-                    console.log("after cur chng " + cur);
+
+
+                    setbval(b => 1);
+                    console.log("before cur chng " + cur);
+
+                    setCur(cur => 1);
+
+                    
                     setlosses(0);
-                    
+
                     setd(d => []);
-                    
+
                     arr.fill(false);
                     for (let i = 1; i <= cur; i++) {
                         let obj = { key: i, value: i, pos: genPos() };
                         setd(d => [...d, obj]);
                     }
                     //let temp = current++;
-                    console.log("pressed restart");
+
                 }}>
                     <Text>Restart</Text>
                 </Pressable>
