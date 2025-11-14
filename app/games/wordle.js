@@ -2,24 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, TextInput, Keyboard } from 'react-native';
 import BarGraph from "../../components/graph.js"; 
 
-const WORDS = ['PIANO', 'LIGHT', 'STORM', 'BRAVE', 'CRANE', 'SLATE', 'ABOUT', 'STEAL', 'GREAT', 'PLANT'];
+const WORDS = ['PIANO', 'LIGHT', 'STORM', 'BRAVE', 'CRANE', 'SLATE', 'ABOUT', 'STEAL', 'GREAT', 'PLANT', 'KILLS', 'KITTY', 'MERGE', 'QUICK', 'REACT'];
 //we can add more wrods for funsies 
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
 let wins = [0,0,0,0,0,0]; 
-
-
-function scroll(){
-  const scrollContainer = {
-    height: '300px', 
-    width: '100%', 
-    overflowY: 'scroll',
-    border: '1px solid #ccc',
-    padding: '10px'
-  }; 
-
-
-  } 
  
 export default function App() {
   const [target, setTarget] = useState(() => WORDS[Math.floor(Math.random() * WORDS.length)]);
@@ -84,8 +71,8 @@ export default function App() {
   };
 
   return (
-    <View style ={scrollContainer}> 
     <SafeAreaView style={styles.container}>
+  
       <StatusBar barStyle="light-content" />
       
 
@@ -158,12 +145,21 @@ export default function App() {
         </TouchableOpacity>
       )}
 
-      <View> 
-          <BarGraph size={400} d={[{key: 0 , amo: wins[0]}, {key: 1 , amo: wins[1]},{key: 2 , amo: wins[2]},
-            {key: 3 , amo: wins[3]},{key: 4 , amo: wins[4]},{key: 5 , amo: wins[5]} ]}> </BarGraph>
+      <View style = {styles.barGraph} > 
+          <Text> <Text style={{color: "#29e662"}}> One Guess: {wins[0]} </Text> <Text style={{color: "#94e629"}}> 
+            Two Guesses: {wins[1]}</Text> <Text  style={{color: "#d3e629"}}>  Three Guesses: {wins[2]}</Text> 
+
+         
+         <Text style={{color: "#e6ad29"}}> Four Guesses: {wins[3]}</Text> <Text style={{color: "#e67829"}}> Five Guesses: {wins[4]} </Text> 
+         
+         <Text style = {{color :"#e62929"}}> Six Guesses: {wins[5]} </Text> 
+
+          </Text>
+ <BarGraph size={170} d={[{key:0, amo: wins[0]}, {key:1, amo: wins[1]}, {key:2, amo: wins[2]},
+ {key:3, amo: wins[3]}, {key:4, amo: wins[4]}, {key:5, amo: wins[5]}]}></BarGraph>
+
     </View> 
     </SafeAreaView>
-    </View>
   );
 }
 //I LOVE STYLINGGG1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -179,7 +175,13 @@ export default function App() {
 
 
 const styles = StyleSheet.create({
+  barGraph: {
+    justifyContent: 'center',
+
+  },
+
   container: {
+    overflowY: "auto", 
     flex: 1,
     backgroundColor: '#808080',
     paddingTop: 20,
